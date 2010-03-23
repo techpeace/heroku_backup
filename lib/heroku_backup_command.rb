@@ -34,11 +34,11 @@ module Heroku::Command
       answer = STDIN.gets.chomp
       exit unless answer == 'y'
 
-      display "\n===== Deleting most recent bundle from Heroku..."
+      display "===== Deleting most recent bundle from Heroku..."
 
       %x{ heroku bundles:destroy #{latest_bundle_name} #{app_option} }
 
-      display "\n===== Capturing a new bundle..."
+      display "===== Capturing a new bundle..."
 
       %x{ heroku bundles:capture #{app_option} }
 
@@ -46,11 +46,11 @@ module Heroku::Command
         sleep 10
       end
 
-      display "\n===== Downloading new bundle..."
+      display "===== Downloading new bundle..."
 
       %x{ heroku bundles:download #{app_option} }
 
-      display "\n===== Pushing the bundle up to S3..."
+      display "===== Pushing the bundle up to S3..."
 
       # Establish a connection to S3.
       aws_creds =  YAML::load(ERB.new(File.read(File.join(Dir.getwd, 'config', 'amazon_s3.yml'))).result)["default"]
@@ -64,7 +64,7 @@ module Heroku::Command
 
       AWS::S3::S3Object.store(latest_bundle_name + '.tar.gz', open(bundle_file_name), @app + '-backups')
 
-      puts "\n===== Deleting the temporary bundle file..."
+      puts "===== Deleting the temporary bundle file..."
 
       FileUtils.rm(bundle_file_name)
     end
