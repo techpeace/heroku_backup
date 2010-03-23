@@ -1,5 +1,5 @@
 =begin
-  Copyright (c) 2009 Matthew Buck.
+  Copyright (c) 2009 Matt Buck.
 
   This file is part of Heroku Backup Command.
 

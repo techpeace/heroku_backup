@@ -17,10 +17,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 =end
 
-begin
-  require 'aws/s3'
-rescue LoadError
-  raise "aws/s3 gem is missing.  Please install aws/s3: sudo gem install aws-s3"
+Heroku::Command::Help.group('Backup Command') do |group|
+  group.command('backup', 'deletes the current bundle, captures a new one, and uploads it to S3')
 end
-require File.dirname(__FILE__) + '/lib/heroku_backup_command'
-require File.dirname(__FILE__) + '/lib/help'
