@@ -1,0 +1,41 @@
+= Heroku Switch Command
+
+Plugin that provides the switch command. This allows you to quickly switch
+which heroku remote to use.
+
+== Installation
+
+NOTE: This plugin depends on ruby-git being installed.
+
+To install:
+
+    $ heroku plugins:install git://github.com/hone/heroku_switch_command.git
+
+== Note on Patches/Pull Requests
+ 
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but
+   bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+== Thanks
+
+Special thanks goes out to technicalpickles for helping me refactor my code.
+
+== Copyright
+
+Copyright (c) 2009 Terence Lee. See LICENSE for details.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
