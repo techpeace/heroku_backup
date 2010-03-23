@@ -29,6 +29,8 @@ module Heroku::Command
 
     # Capture a new bundle and back it up to S3.
     def index
+      require 'erb'
+
       # Warn that we're about to blow out the latest bundle.
       print 'WARNING: This will destroy the most recent bundle.  Do you wish to proceed? (y/n) '
       answer = STDIN.gets.chomp
