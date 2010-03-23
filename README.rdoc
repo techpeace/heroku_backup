@@ -9,7 +9,7 @@ NOTE: This plugin depends on aws-s3 being installed.
 
 To install:
 
-    $ heroku plugins:install git://github.com/techpeace/heroku_backup_command.git
+    $ heroku plugins:install backup
 
 == Setup
 
