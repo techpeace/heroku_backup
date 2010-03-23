@@ -39,3 +39,4 @@ module Heroku::Command
       display(selected_application)
     end
   end
+end
