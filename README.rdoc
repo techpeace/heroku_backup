@@ -1,34 +1,56 @@
-= Heroku Switch Command
+= Heroku Backup Command
 
-Plugin that provides the switch command. This allows you to quickly switch
-which heroku remote to use.
+Plugin that provides the backup command for the heroku gem. This allows you
+to automate the process of backing up bundles to S3.
 
 == Installation
 
-NOTE: This plugin depends on ruby-git being installed.
+NOTE: This plugin depends on aws-s3 being installed.
 
 To install:
 
-    $ heroku plugins:install git://github.com/hone/heroku_switch_command.git
+    $ heroku plugins:install git://github.com/techpeace/heroku_backup_command.git
+
+== Setup
+
+This plugin assumes that you are using paperclip's S3 functionality for
+storing AWS credentials, i.e. a file in ++config/amazon_s3.yml++ that looks like
+this:
+
+    default: &default
+      access_key_id: RE4LLYL0NG4CC3SSK3Y
+      secret_access_key: 3V3Nl0ng3rACC3ssK3Y
+
+    production:
+      bucket: myapp_production
+      <<: *default
+
+    staging:
+      bucket: myapp_staging
+      <<: *default
+
+    development:
+      bucket: myapp_development
+      <<: *default
+
+
+Clearly, there are better ways to handle this.  If you think of one, fork
+fork fork it!
 
 == Note on Patches/Pull Requests
  
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 == Thanks
 
-Special thanks goes out to technicalpickles for helping me refactor my code.
+Special thanks goes out to hone for explaining the heroku plugin API to me,
+and for letting me gank the layout of his README.
 
 == Copyright
 
-Copyright (c) 2009 Terence Lee. See LICENSE for details.
+Copyright (c) 2010 Matt Buck. See LICENSE for details.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
