@@ -14,7 +14,7 @@ To install:
 == Setup
 
 This plugin assumes that you are using paperclip's S3 functionality for
-storing AWS credentials, i.e. a file in ++config/amazon_s3.yml++ that looks like
+storing AWS credentials, i.e. a file in <tt>config/amazon_s3.yml</tt> that looks like
 this:
 
     default: &default
