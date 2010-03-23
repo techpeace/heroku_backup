@@ -19,24 +19,54 @@
 
 module Heroku::Command
   class Backup < BaseWithApp
-    def latest_bundle_name(app)
-      %x{ heroku bundles #{app_option(app)}| cut -f 1 -d ' ' }.chomp
+    def app_option
+      '--app ' + @app
     end
 
-    def app_option(app)
-      '--app ' + app if app
+    def latest_bundle_name
+      %x{ heroku bundles #{app_option}| cut -f 1 -d ' ' }.chomp
     end
 
-    def app_name(app)
-      return app if app
-
-      %x{heroku info}.split("\n")[0].split(' ')[1]
-    end
-
-    #desc "Capture a new bundle and back it up to S3."
-    #task :backup, :app do |t, args|
+    # Capture a new bundle and back it up to S3.
     def index
-      display(selected_application)
+      # Warn that we're about to blow out the latest bundle.
+      print 'WARNING: This will destroy the most recent bundle.  Do you wish to proceed? (y/n) '
+      answer = STDIN.gets.chomp
+      exit unless answer == 'y'
+
+      display "\n===== Deleting most recent bundle from Heroku..."
+
+      %x{ heroku bundles:destroy #{latest_bundle_name} #{app_option} }
+
+      display "\n===== Capturing a new bundle..."
+
+      %x{ heroku bundles:capture #{app_option} }
+
+      while %x{ heroku bundles #{app_option} | grep complete }.empty?
+        sleep 10
+      end
+
+      display "\n===== Downloading new bundle..."
+
+      %x{ heroku bundles:download #{app_option} }
+
+      display "\n===== Pushing the bundle up to S3..."
+
+      # Establish a connection to S3.
+      aws_creds =  YAML::load(ERB.new(File.read(File.join(Dir.getwd, 'config', 'amazon_s3.yml'))).result)["default"]
+
+      AWS::S3::Base.establish_connection!(
+        :access_key_id     => aws_creds["access_key_id"],
+        :secret_access_key => aws_creds["secret_access_key"]
+      )
+
+      bundle_file_name = @app + '.tar.gz'
+
+      AWS::S3::S3Object.store(latest_bundle_name + '.tar.gz', open(bundle_file_name), @app + '-backups')
+
+      puts "\n===== Deleting the temporary bundle file..."
+
+      FileUtils.rm(bundle_file_name)
     end
   end
 end
