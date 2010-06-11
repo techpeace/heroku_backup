@@ -15,9 +15,9 @@ To install:
 
 This plugin requires two environment variables: 
 
-HEROKU_S3_KEY
+AMAZON_ACCESS_KEY_ID
 
-HEROKU_S3_SECRET
+AMAZON_SECRET_ACCESS_KEY
 
 Another option would be storing the keys on Heroku, and retrieving them
 from there. Then this plugin would work from any collaborator's machine. 
