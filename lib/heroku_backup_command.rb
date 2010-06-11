@@ -64,11 +64,24 @@ module Heroku::Command
 
       bundle_file_name = @app + '.tar.gz'
 
-      AWS::S3::S3Object.store(latest_bundle_name + '.tar.gz', open(bundle_file_name), @app + '-backups')
+      AWS::S3::S3Object.store(latest_bundle_name + '.tar.gz', open(bundle_file_name), s3_bucket)
 
       puts "===== Deleting the temporary bundle file..."
 
       FileUtils.rm(bundle_file_name)
     end
+      
+    private
+    
+      def s3_bucket
+        retries = 1
+        begin
+          return @app + '-backups' if AWS::S3::Bucket.find(@app + '-backups')
+        rescue AWS::S3::NoSuchBucket
+          AWS::S3::Bucket.create(@app + '-backups')
+          retry if retries > 0 && (retries -= 1)
+        end
+      end
+      
   end
 end
