@@ -19,6 +19,9 @@
 
 module Heroku::Command
   class Backup < BaseWithApp
+    S3_KEY    = 'HEROKU_S3_KEY'
+    S3_SECRET = 'HEROKU_S3_SECRET'
+    
     def app_option
       '--app ' + @app
     end
@@ -30,6 +33,11 @@ module Heroku::Command
     # Capture a new bundle and back it up to S3.
     def index
       require 'erb'
+
+      if missing_keys?
+        display "ERROR: Set environment variables #{S3_KEY} and #{S3_SECRET} to proceed"
+        exit
+      end
 
       # Warn that we're about to blow out the latest bundle.
       print 'WARNING: This will destroy the most recent bundle.  Do you wish to proceed? (y/n) '
@@ -55,20 +63,25 @@ module Heroku::Command
       display "===== Pushing the bundle up to S3..."
 
       # Establish a connection to S3.
-      aws_creds =  YAML::load(ERB.new(File.read(File.join(Dir.getwd, 'config', 'amazon_s3.yml'))).result)["default"]
 
       AWS::S3::Base.establish_connection!(
-        :access_key_id     => aws_creds["access_key_id"],
-        :secret_access_key => aws_creds["secret_access_key"]
+        :access_key_id     => ENV[S3_KEY],
+        :secret_access_key => ENV[S3_SECRET]
       )
 
       bundle_file_name = @app + '.tar.gz'
 
       AWS::S3::S3Object.store(latest_bundle_name + '.tar.gz', open(bundle_file_name), @app + '-backups')
 
-      puts "===== Deleting the temporary bundle file..."
+      display "===== Deleting the temporary bundle file..."
 
       FileUtils.rm(bundle_file_name)
     end
+    
+    private
+    
+      def missing_keys?
+        ENV[S3_KEY].nil? || ENV[S3_SECRET].nil?
+      end
   end
 end

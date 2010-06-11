@@ -13,29 +13,15 @@ To install:
 
 == Setup
 
-This plugin assumes that you are using paperclip's S3 functionality for
-storing AWS credentials, i.e. a file <tt>config/amazon_s3.yml</tt> that looks like
-this:
+This plugin requires two environment variables: 
 
-    default: &default
-      access_key_id: RE4LLYL0NG4CC3SSK3Y
-      secret_access_key: 3V3Nl0ng3rACC3ssK3Y
+HEROKU_S3_KEY
 
-    production:
-      bucket: myapp_production
-      <<: *default
+HEROKU_S3_SECRET
 
-    staging:
-      bucket: myapp_staging
-      <<: *default
-
-    development:
-      bucket: myapp_development
-      <<: *default
-
-
-Clearly, there are better ways to handle this.  If you think of one, fork
-fork fork it!
+Another option would be storing the keys on Heroku, and retrieving them
+from there. Then this plugin would work from any collaborator's machine. 
+If you want to implement this, please fork it!
 
 == Note on Patches/Pull Requests
  
