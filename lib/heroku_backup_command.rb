@@ -21,7 +21,7 @@ module Heroku::Command
   class Backup < BaseWithApp
     S3_KEY    = 'AMAZON_ACCESS_KEY_ID'
     S3_SECRET = 'AMAZON_SECRET_ACCESS_KEY'
-    
+
     def app_option
       '--app ' + @app
     end
@@ -34,8 +34,10 @@ module Heroku::Command
     def index
       require 'erb'
 
-      if missing_keys?
-        display "ERROR: Set environment variables #{S3_KEY} and #{S3_SECRET} to proceed"
+      if missing_keys? && missing_config_file?
+        display "ERROR: Set environment variables #{S3_KEY} and #{S3_SECRET}" +
+                " or set up a config file at ./config/amazon_s3.yml to proceed." +
+                "  \nSee README for more information."
         exit
       end
 
@@ -64,10 +66,19 @@ module Heroku::Command
 
       # Establish a connection to S3.
 
-      AWS::S3::Base.establish_connection!(
-        :access_key_id     => ENV[S3_KEY],
-        :secret_access_key => ENV[S3_SECRET]
-      )
+      if missing_keys?
+        aws_creds =  YAML::load(ERB.new(File.read(config_file_path)).result)["default"]
+
+        AWS::S3::Base.establish_connection!(
+          :access_key_id     => aws_creds["access_key_id"],
+          :secret_access_key => aws_creds["secret_access_key"]
+        )
+      else
+        AWS::S3::Base.establish_connection!(
+          :access_key_id     => ENV[S3_KEY],
+          :secret_access_key => ENV[S3_SECRET]
+        )
+      end
 
       bundle_file_name = @app + '.tar.gz'
 
@@ -77,13 +88,21 @@ module Heroku::Command
 
       FileUtils.rm(bundle_file_name)
     end
-    
+
     private
-    
+
+      def config_file_path
+        File.join(Dir.getwd, 'config', 'amazon_s3.yml')
+      end
+
+      def missing_config_file?
+        !File.exists? config_file_path
+      end
+
       def missing_keys?
         ENV[S3_KEY].nil? || ENV[S3_SECRET].nil?
       end
-    
+
       def s3_bucket
         retries = 1
         begin
