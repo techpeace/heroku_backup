@@ -5,29 +5,61 @@ to automate the process of backing up bundles to S3.
 
 == Installation
 
-NOTE: This plugin depends on aws-s3 being installed.
+If you haven't already, install hone's fabulous herocutter plugin:
 
-To install:
+    $ heroku plugins:install git://github.com/hone/heroku_herocutter.git
+
+After that, a simple
 
     $ heroku plugins:install backup
 
+will get you up and running.
+
 == Setup
 
-This plugin requires two environment variables: 
+This plugin requires two environment variables:
 
-AMAZON_ACCESS_KEY_ID
+    AMAZON_ACCESS_KEY_ID
 
-AMAZON_SECRET_ACCESS_KEY
+    AMAZON_SECRET_ACCESS_KEY
 
-Another option would be storing the keys on Heroku, and retrieving them
-from there. Then this plugin would work from any collaborator's machine. 
-If you want to implement this, please fork it!
+You can also still use the old style - namely, using +config/amazon_s3.yml+
+(the S3 config file used with the paperclip gem).  Another option would be
+to store these keys on Heroku and retrieve them from there, allowing this
+plugin to work from any collaborator's machine.  If you want to implement
+this, then fork fork fork it!
+
+You'll also need to make sure that you've enabled the Single Bundle addon
+for your app:
+
+    $ heroku addons:add bundles:single
+
+== Usage
+
+From your project's root directory:
+
+    $ heroku backup
+
+That'll make the magic happen.
 
 == Note on Patches/Pull Requests
  
 * Fork the project.
 * Make your feature addition or bug fix.
 * Send me a pull request. Bonus points for topic branches.
+
+== ChangeLog
+
+*0.3* 7/13/10
+
+* Credentials can be specified with environment variables or 
+  config file. (ntjh and herestomwiththeweather)
+* S3 Bucket is created automatically, if not found. (nthj)
+
+== Contributors
+
+* Nathaniel Jones (nthj)
+* Tom Brown (herestomwiththeweather)
 
 == Thanks
 
