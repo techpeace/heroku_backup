@@ -1,3 +1,5 @@
+*NOTE*:: Heroku has ceased to support the bundles functionality that powered this plugin. Any apps created after 11/30/10 will not have access to the Bundles add-on, and it will cease to function completely by 2/1/11. See http://blog.heroku.com/archives/2010/12/1/bundles-deprecation/ for more details.
+
 = Heroku Backup Command
 
 Plugin that provides the backup command for the heroku gem. This allows you
